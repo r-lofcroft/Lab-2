@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios';
+
 export default {
   name: 'Jumbotron',
   data(){
@@ -34,25 +35,46 @@ export default {
     //only filter of top 100 hits but has potential to go past 2500
     let i = Math.round(Math.random() * 100);
     console.log(i)
+
     axios.get(`https://api.jikan.moe/v3/anime/${i}`)
-        .catch(error => {
-        //Currently 50/50 solution. When error: 50% shows jumbotron 50% shows loading
-        this.error = true
-        console.log(error)
-        //Feels like dirty fix for 404-error + pretty slow (Look for alternative fix)
-        window.location.reload()
-        })
         .then(response => response.data)
+        .catch(handleErrors)
         .then(result =>{
             this.animeDatas=result
             console.log(this.animeDatas.title)
         })
-        
+        function handleErrors(err){
+          if(err.response.status === 404){
+            console.log('Problem with response.',err.response.status)
+            this.reloadRequest()
+          } else{
+            console.log('Other Error')
+          }
+        }
   },
   methods: {
     onClick(){
-        window.location.reload()
+        this.reloadRequest()
     },
+    //Reloads axios.get when 404 response. (works better than reloading window)
+    reloadRequest(){
+      let i = Math.round(Math.random() * 100);
+      axios.get(`https://api.jikan.moe/v3/anime/${i}`)
+        .then(response => response.data)
+        .catch(handleErrors)
+        .then(result =>{
+            this.animeDatas=result
+            console.log(this.animeDatas.title)
+        })
+        function handleErrors(err){
+          if(err.response.status === 404){
+            console.log('Problem with response.',err.response.status)
+            this.reloadRequest()
+          } else{
+            console.log('Other Error')
+          }
+        }
+    }
   }
 }
 </script>

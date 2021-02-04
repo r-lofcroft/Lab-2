@@ -10,9 +10,9 @@ module.export = {
               {
                 handler: 'NetworkFirst',
                 options: {
-                  networkTimeoutSeconds: 500
+                  networkTimeoutSeconds: 5
                 },
-                urlPattern: 'https://avancera.app/cities/'
+                urlPattern: 'https://api.jikan.moe/v3/anime/1'
               }
             ]
           }
